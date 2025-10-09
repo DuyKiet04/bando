@@ -1,5 +1,5 @@
 # Xây dựng web hiển thị bản đồ 
-## Công nghệ sử dụng :
+## Công nghệ  và công cụ sử dụng :
 - **HTML:** Tạo cấu trúc cho trang web hiển thị bản đồ.
 - **CSS:** Trang trí giao diện, giúp bản đồ hiển thị kích thước tùy chỉnh.
 - **JavaScript:** khởi tạo và điều khiển bản đồ.
