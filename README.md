@@ -28,4 +28,4 @@
 
 ## Link demo GitHub Pages.
 
-[Link]()
+[Link](https://duykiet04.github.io/bando/)
