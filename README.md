@@ -1,31 +1,31 @@
-# Xây dựng web hiển thị bản đồ 
----
-## Giới thiệu
-- **bando** là một trang web hiển thị bản đồ tương tác sử dụng nền bản đồ từ **OpenStreetMap (OSM)**. 
+# Xây dựng web hiển thị bản đồ
 
-- Vị trí trung tâm của bản đồ được đặt tại **273 Điện Biên Phủ, Phường Xuân Hòa, Thành phố Hồ Chí Minh**.  
+## Danh sách over Layers
 
-- Người dùng có thể **phóng to, thu nhỏ** và xem **marker hiển thị tại vị trí trung tâm**.  
----
-## Công nghệ  và công cụ sử dụng :
-- **HTML:** Tạo cấu trúc cho trang web hiển thị bản đồ.
-- **CSS:** Trang trí giao diện, giúp bản đồ hiển thị kích thước tùy chỉnh.
-- **JavaScript:** khởi tạo và điều khiển bản đồ.
-- **Leaflet.js:** Thư viện hiển thị và thao tác với bản đồ OpenStreetMap.
-- **OpenStreetMap (OSM):** Nền bản đồ sử dụng.
-- **Vite:** Công cụ khởi tạo và build project .
-- **Visual Studio Code:** Môi trường viết code .
-- **Git & GitHub:** Quản lý, lưu trữ và nộp code dự án.
----
+| STT | Tên lớp                | Tên lớp đầy đủ                   | URL WMS                                                           |
+| --- | ---------------------- | -------------------------------- | ----------------------------------------------------------------- |
+| 1   | Đường bộ               | `dulieunen:duongbo`              | https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms?       |
+| 2   | Bề mặt khu dân cư      | `dulieunen:bematkhudancu`        | https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms?       |
+| 3   | Cây lâu năm            | `dulieunen:caylaunam`            | https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms?)      |
+| 4   | Công trình công nghiệp | `dulieunen:congtrinhcongnghieps` | https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms?       |
+| 5   | Điểm địa chính 2024    | `coso_dodac_2024:diemdiachinh`   | https://geodata-stnmt.tphcm.gov.vn/geoserver/coso_dodac_2024/wms? |
+
+## Nguồn over layers
+
+- [Link](https://geodata-stnmt.tphcm.gov.vn/geoserver/web/wicket/bookmarkable/org.geoserver.web.demo.MapPreviewPage?1&filter=false)
+
 ## Cách cài đặt .
-- Mở terminal **cd bando (project)** => **npm install** (nếu máy đã có vite)
+
+- **git clone https://github.com/DuyKiet04/bando.git**
+- **cd bando (project)** => **npm install** (nếu máy đã có vite)
 - **npm install (lib)** ví dụ npm install leaflet
----
+
 ## Cách chạy project .
 
-- **npm run dev** => ctrl + click  **http://localhost:5173/**
+- **npm run dev** => ctrl + click **http://localhost:5173/**
+
 - **npm run build**
----
 
+## Link demo GitHub Pages.
 
-
+[Link]()
