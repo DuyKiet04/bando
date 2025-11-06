@@ -2,6 +2,14 @@
 import L from "leaflet"; 
 import "leaflet/dist/leaflet.css";
 
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: new URL('leaflet/dist/images/marker-icon-2x.png', import.meta.url).href,
+  iconUrl: new URL('leaflet/dist/images/marker-icon.png', import.meta.url).href,
+  shadowUrl: new URL('leaflet/dist/images/marker-shadow.png', import.meta.url).href,
+});
+
 //  tọa độ trung tâm (10.780221592300679, 106.68759855218681) 273 Điện Biên Phủ , Phường Xuân Hòa , Thành Phố Hồ Chí Minh
 const lat = 10.780221592300679;
 const log = 106.68759855218681 ;
@@ -82,3 +90,4 @@ marker.bindPopup('<b>273 Điện Biên Phủ , Phường Xuân Hòa , <br> Thàn
 marker.on('click' , function() {
   map.setView([lat, log ] , 17 , {animate: true})
 });
+

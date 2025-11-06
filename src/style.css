@@ -1,4 +1,4 @@
- /* gg font */
+/* gg font */
  @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
       * {
         margin: 0;
@@ -11,7 +11,7 @@
       body{
         font-size:62.5%;
         font-family: "Roboto", sans-serif;
-        overflow: hidden;
+        scrollbar-width: auto;
         
       }
       :root {
@@ -27,42 +27,28 @@
         justify-content: center;
         align-items: center;
         background-color:var(--primary) ;
-        /* position: fixed; */
-        top: 0;
-        z-index: 1001;
-        
       }
       
       .header-container h1{
-        display: flex;
-        align-items: center;
+        display:flex ;
         justify-content: center;
+        align-items: center;
         font-size: 1.6rem;
         font-weight: 500;
         margin: 10px 0;
         color:var(--text-color);
+        gap: 5px;
       }
       .header-container i {
-        margin-right: 5px;
         font-size: 1.8rem;
       }
       /* ------------------------conten-------------------------- */
-      .container{
-        max-width: 1200px;
-        margin: 0 auto;
-        position: relative;
-      }
       
-      .conten {
-        margin-top: 0;
-      }
       #map {
         width: 100%;
-        height: 680px;
+        height: calc(100vh - 90px );
         border: 1px solid var(--color-boder);
-        border-radius: 4px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        position: absolute;
+        
         
       }
       /* ---------------------------footer-------------------------------- */
@@ -72,9 +58,6 @@
         justify-content: center;
         align-items: center;
         background-color:var(--primary);
-        position: absolute;
-        bottom: 0;
-        
       }
       .footer-container p {
         display: flex;
@@ -84,8 +67,9 @@
         font-weight: 500;
         font-size: 1rem;
         color: #ffff;
+        gap: 5px;
       }
       .footer-container i {
         font-size: 1.1rem;
-        margin: 0 5px;
+        
       }
