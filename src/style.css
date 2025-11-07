@@ -11,9 +11,7 @@
       body{
         font-size:62.5%;
         font-family: "Roboto", sans-serif;
-        scrollbar-width: auto;
-        
-      }
+        }
       :root {
         --color-boder: #686363;
         --text-color:#ffff;
@@ -48,8 +46,6 @@
         width: 100%;
         height: calc(100vh - 90px );
         border: 1px solid var(--color-boder);
-        
-        
       }
       /* ---------------------------footer-------------------------------- */
       footer{
@@ -71,5 +67,4 @@
       }
       .footer-container i {
         font-size: 1.1rem;
-        
       }
