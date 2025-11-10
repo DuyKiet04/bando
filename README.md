@@ -6,7 +6,7 @@
 | --- | ---------------------- | -------------------------------- | ----------------------------------------------------------------- |
 | 1   | Đường bộ               | `dulieunen:duongbo`              | https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms?       |
 | 2   | Bề mặt khu dân cư      | `dulieunen:bematkhudancu`        | https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms?       |
-| 3   | Cây lâu năm            | `dulieunen:caylaunam`            | https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms?)      |
+| 3   | Cây lâu năm            | `dulieunen:caylaunam`            | https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms?       |
 | 4   | Công trình công nghiệp | `dulieunen:congtrinhcongnghieps` | https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms?       |
 | 5   | Điểm địa chính 2024    | `coso_dodac_2024:diemdiachinh`   | https://geodata-stnmt.tphcm.gov.vn/geoserver/coso_dodac_2024/wms? |
 

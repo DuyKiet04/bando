@@ -26,7 +26,7 @@ const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 //  Lớp nền Esri World Imagery
 const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
   maxZoom: 20,    
-  attribution: 'Tiles &copy; Esri — Source: Esri, USGS, USDA, etc.'
+  attribution: ' &copy; Esri '
   });
         
 
@@ -68,25 +68,141 @@ const layerCongTrinh = L.tileLayer.wms("https://geodata-stnmt.tphcm.gov.vn/geose
 });
 
 // Layer Control 
-const baseLayers = {
-  "OpenStreetMap": osm,
-  "Vệ tinh": satelliteLayer,
-};
+const baseLayers =[
+   {
+  name: 'OpenStreetMap',
+  layer: osm ,
+  img: './img/osm.png',
+},
+{
+  name: 'Vệ tinh',
+  layer: satelliteLayer ,
+  img: './img/veTinh.png',
+}
+];
 
-const overlayLayers = {
-  "Điểm địa chính ": layerDiemDiaChinh,
-  "Đường bộ": layerDuongBo,
-  "Bề mặt khu dân cư": layerBeMat,
-  "Cây lâu năm": layerCayLauNam,
-  "Công trình công nghiệp": layerCongTrinh,
-};
-// tạo và hiển thị bảng điều khiển  , collapsed : true là bảng thu nhỏ lại , flase thì show ra .
-L.control.layers(baseLayers, overlayLayers, { collapsed: true }).addTo(map);
+const overlayLayers =[
+  {
+    name: 'Bề mặt dân cư',
+    layer:layerBeMat ,
+    icon: 'fa-solid fa-house-chimney'
+  },
+  {
+    name: 'Điểm địa chính',
+    layer:layerDiemDiaChinh ,
+    icon:'fa-solid fa-location-dot'
+  },
+  {
+    name: 'Đường bộ',
+    layer:layerDuongBo ,
+    icon:'fa-solid fa-road'
+  },
+  {
+    name: 'Cây lâu năm',
+    layer:layerCayLauNam ,
+    icon:'fa-solid fa-tree'
+  },
+  {
+    name: 'Công trình công nghiệp',
+    layer:layerCongTrinh ,
+    icon:'fa-solid fa-industry'
+  }
+
+]
+
+// Custom control 
+const CombinedLayerControl = L.Control.extend({
+    onAdd: function () {
+        
+        const wrapper = L.DomUtil.create("div", "combined-layer-control-wrapper");
+
+        //  nút bấm icon
+        const toggleButton = L.DomUtil.create("div", "custom-layer-toggle", wrapper);
+        toggleButton.innerHTML = `<div><i class="fa-solid fa-layer-group"></i></div>`;
+        //  bảng control
+        const panelContainer = L.DomUtil.create("div", "combined-layer-control", wrapper);
+        
+        // Ngăn click trên control lan xuống bản đồ
+        L.DomEvent.disableClickPropagation(wrapper);
+
+        const baseSection = L.DomUtil.create("div", "base-section", panelContainer);
+        const titleBlock = L.DomUtil.create("div", "base-title", baseSection);
+        titleBlock.innerHTML = `<h4> Lớp nền bản đồ</h4>`;
+        const itemsContainer = L.DomUtil.create("div", "base-items-list", baseSection);
+        baseLayers.forEach((item, index) => {
+            const div = L.DomUtil.create("div", "base-item", itemsContainer);
+            div.innerHTML = `
+                <img src="${item.img}" class="base-thumb" alt="${item.name}">
+                <div class="base-name">${item.name}</div>
+            `;
+            
+            
+            if (map.hasLayer(item.layer)) {
+                div.classList.add("selected");
+            }
+
+            L.DomEvent.on(div, "click", () => {
+                baseLayers.forEach(i => map.removeLayer(i.layer));
+                map.addLayer(item.layer);
+                document.querySelectorAll(".base-item").forEach(el => el.classList.remove("selected"));
+                div.classList.add("selected");
+            });
+        });
+        
+        const overlaySection = L.DomUtil.create("div", "overlay-section", panelContainer);
+        overlaySection.innerHTML = `<h4> Lớp dữ liệu</h4>`;
+        
+        overlayLayers.forEach(item => {
+            const div = L.DomUtil.create("div", "overlay-item", overlaySection);
+            div.innerHTML = `
+                <label>
+                    <input type="checkbox" class="overlay-checkbox">
+                    <i class="${item.icon} overlay-icon" ></i>
+                    <span class="overlay-name">${item.name}</span>
+                </label>
+            `;
+            const checkbox = div.querySelector(".overlay-checkbox");
+
+            if (map.hasLayer(item.layer)) {
+                checkbox.checked = true;
+                div.classList.add("active");
+            }
+
+            L.DomEvent.on(checkbox, "change", function () {
+                if (this.checked) { 
+                    map.addLayer(item.layer);
+                    div.classList.add("active");
+                } else {
+                    map.removeLayer(item.layer);
+                    div.classList.remove("active"); 
+                }
+            });
+        });
+        
+        return wrapper;
+    },    
+});
+
+map.addControl(new CombinedLayerControl({ position: "bottomleft"} ));
+ 
+
 // marker
-const marker = L.marker([lat , log] ).addTo(map);
-  
+const faIcon = L.divIcon({
+  html: `
+    <i class="fa-solid fa-location-dot " 
+       style="
+         color: rgb(18, 199, 57);
+         font-size: 32px;
+       ">
+    </i>
+  `,
+  className: '',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -28]
+});
+const marker = L.marker([lat , log] , {icon: faIcon}).addTo(map);
 marker.bindPopup('<b>273 Điện Biên Phủ , Phường Xuân Hòa , <br> Thành Phố Hồ chí Minh.</b>');
-
 marker.on('click' , function() {
   map.setView([lat, log ] , 17 , {animate: true})
 });
