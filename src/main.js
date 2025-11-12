@@ -29,6 +29,27 @@ const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/
   attribution: ' &copy; Esri '
   });
         
+const esriStreet = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+  attribution: '© Esri Street Map',
+  
+  maxZoom: 20
+  });
+const esriTopo = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+  attribution: '© Esri Topographic',
+  
+  maxZoom: 20
+  });
+const googleRoad = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+  attribution: '© Google Roads',
+  maxZoom: 20
+});
+const carto = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+  attribution: '© Carto Voyager',
+                
+  maxZoom: 20
+  });
+
+
 
 //  5 lớp dữ liệu WMS từ  https://geodata-stnmt.tphcm.gov.vn/geoserver/web/wicket/bookmarkable/org.geoserver.web.demo.MapPreviewPage?1&filter=false"
 
@@ -70,15 +91,36 @@ const layerCongTrinh = L.tileLayer.wms("https://geodata-stnmt.tphcm.gov.vn/geose
 // Layer Control 
 const baseLayers =[
    {
-  name: 'OpenStreetMap',
+  name: 'OSM',
   layer: osm ,
   img: './img/osm.png',
 },
 {
-  name: 'Vệ tinh',
+  name: 'Vệ Tinh',
   layer: satelliteLayer ,
   img: './img/veTinh.png',
-}
+},
+{
+  name: 'Đường Phố',
+  layer: esriStreet,
+  img: './img/duongpho.png',
+},
+{
+  name: 'Địa Hình',
+  layer: esriTopo ,
+  img: './img/diahinh.png',
+},
+{
+  name: 'Google Map',
+  layer: googleRoad ,
+  img: './img/ggmap.png',
+},
+{
+  name: 'Carto ',
+  layer: carto ,
+  img: './img/carto.png',
+},
+
 ];
 
 const overlayLayers =[

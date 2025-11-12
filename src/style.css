@@ -115,10 +115,11 @@
 }
 
 .base-items-list {
-    display: flex;
-    margin: 10px 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 cột */
+    gap: 10px;
+    justify-items: center;
     align-items: center;
-    justify-content: space-around; 
 }
 
 .base-item {
