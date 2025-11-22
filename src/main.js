@@ -1,205 +1,134 @@
- // thư viện leaflet
-import L from "leaflet"; 
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 delete L.Icon.Default.prototype._getIconUrl;
-
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: new URL('leaflet/dist/images/marker-icon-2x.png', import.meta.url).href,
   iconUrl: new URL('leaflet/dist/images/marker-icon.png', import.meta.url).href,
   shadowUrl: new URL('leaflet/dist/images/marker-shadow.png', import.meta.url).href,
 });
 
-//  tọa độ trung tâm (10.780221592300679, 106.68759855218681) 273 Điện Biên Phủ , Phường Xuân Hòa , Thành Phố Hồ Chí Minh
-const lat = 10.780221592300679;
-const log = 106.68759855218681 ;
+// Cấu hình API
+const CONFIG_KEY = 'hcm'; 
+const API_URL = `https://mapsystem.netlify.app/api/config/${CONFIG_KEY}`;
 
-//  Khởi tạo bản đồ, trung tâm tại 273 Điện Biên Phủ, TP.HCM
-const map = L.map('map').setView([lat, log], 17) ;
+async function initApp() {
+  try {
+    console.log("Đang tải config...");
+    const response = await fetch(API_URL);
+    if (!response.ok) throw new Error("Không tải được cấu hình bản đồ!");
+    
+    const config = await response.json();
+    console.log("Config loaded:", config);
 
-//  Lớp nền OSM
-const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  maxZoom: 20,
-  attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
-}).addTo(map);
+    if(config.title) document.title = config.title;
 
-//  Lớp nền Esri World Imagery
-const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-  maxZoom: 20,    
-  attribution: ' &copy; Esri '
-  });
-        
-const esriStreet = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-  attribution: '© Esri Street Map',
-  
-  maxZoom: 20
-  });
-const esriTopo = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-  attribution: '© Esri Topographic',
-  
-  maxZoom: 20
-  });
-const googleRoad = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-  attribution: '© Google Roads',
-  maxZoom: 20
-});
-const carto = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-  attribution: '© Carto Voyager',
-                
-  maxZoom: 20
-  });
+    //  Cập nhật Header Title
+    const titleEl = document.getElementById('app-title');
+    if (titleEl && config.title) {
+        titleEl.innerText = config.title.toUpperCase(); // Viết hoa cho giống style cũ
+    }
 
+    //  Cập nhật Header Logo
+    const logoEl = document.getElementById('app-logo');
+    if (logoEl && config.logoUrl) {
+        logoEl.src = config.logoUrl;
+        logoEl.classList.remove('hidden'); 
+         
+    }
+
+    // 4. Cập nhật Footer Title
+    
+    const footerTitle = document.getElementById('footer-title');
+    if (footerTitle && config.title) {
+        footerTitle.innerText = config.title.toUpperCase();
+    }
+
+    const footerLogo = document.getElementById('app-logo1');
+    if (footerLogo && config.logoUrl) {
+        footerLogo.src = config.logoUrl;
+        footerLogo.classList.remove('hidden');
+
+    }
+    
 
 
-//  5 lớp dữ liệu WMS từ  https://geodata-stnmt.tphcm.gov.vn/geoserver/web/wicket/bookmarkable/org.geoserver.web.demo.MapPreviewPage?1&filter=false"
+    const map = L.map('map').setView(config.center, config.zoom);
 
-const layerDiemDiaChinh = L.tileLayer.wms("https://geodata-stnmt.tphcm.gov.vn/geoserver/coso_dodac_2024/wms?", {
-  layers: "coso_dodac_2024:diemdiachinh",
-  format: "image/png",
-  transparent: true,
-  attribution: "Điểm địa chính | Nguồn: Sở TN&MT TP.HCM",
-});
+    const baseLayersData = config.baseLayers.map(item => ({
+      name: item.name,
+      img: item.thumbnailUrl,
+      layer: L.tileLayer(item.layerUrl, {
+        maxZoom: 20,
+        attribution: '&copy; OpenStreetMap contributors'
+      })
+    }));
 
-const layerDuongBo = L.tileLayer.wms("https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms?", {
-  layers: "dulieunen:duongbo",
-  format: "image/png",
-  transparent: true,
-  attribution: "Đường bộ | Nguồn: Sở TN&MT TP.HCM",
-});
+    if (baseLayersData.length > 0) {
+      baseLayersData[0].layer.addTo(map);
+    }
 
-const layerBeMat = L.tileLayer.wms("https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms?", {
-  layers: "dulieunen:bematkhudancu",
-  format: "image/png",
-  transparent: true,
-  attribution: "Bề mặt khu dân cư | Nguồn: Sở TN&MT TP.HCM",
-});
+    const overlayLayersData = config.overlays.map(item => ({
+      name: item.name,
+      iconUrl: item.iconUrl, 
+      active: item.active,
+      layer: L.tileLayer.wms(item.wmsUrl, {
+        layers: item.layers,
+        format: "image/png",
+        transparent: true,
+        attribution: item.name
+      })
+    }));
 
-const layerCayLauNam = L.tileLayer.wms("https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms?", {
-  layers: "dulieunen:caylaunam",
-  format: "image/png",
-  transparent: true,
-  attribution: "Cây lâu năm | Nguồn: Sở TN&MT TP.HCM",
-});
+    overlayLayersData.forEach(item => {
+      if (item.active) item.layer.addTo(map);
+    });
 
-const layerCongTrinh = L.tileLayer.wms("https://geodata-stnmt.tphcm.gov.vn/geoserver/dulieunen/wms?", {
-  layers: "dulieunen:congtrinhcongnghieps",
-  format: "image/png",
-  transparent: true,
-  attribution: "Công trình công nghiệp | Nguồn: Sở TN&MT TP.HCM",
-});
-
-// Layer Control 
-const baseLayers =[
-   {
-  name: 'OSM',
-  layer: osm ,
-  img: './img/osm.png',
-},
-{
-  name: 'Vệ Tinh',
-  layer: satelliteLayer ,
-  img: './img/veTinh.png',
-},
-{
-  name: 'Đường Phố',
-  layer: esriStreet,
-  img: './img/duongpho.png',
-},
-{
-  name: 'Địa Hình',
-  layer: esriTopo ,
-  img: './img/diahinh.png',
-},
-{
-  name: 'Google Map',
-  layer: googleRoad ,
-  img: './img/ggmap.png',
-},
-{
-  name: 'Carto ',
-  layer: carto ,
-  img: './img/carto.png',
-},
-
-];
-
-const overlayLayers =[
-  {
-    name: 'Bề mặt dân cư',
-    layer:layerBeMat ,
-    icon: 'fa-solid fa-house-chimney'
-  },
-  {
-    name: 'Điểm địa chính',
-    layer:layerDiemDiaChinh ,
-    icon:'fa-solid fa-location-dot'
-  },
-  {
-    name: 'Đường bộ',
-    layer:layerDuongBo ,
-    icon:'fa-solid fa-road'
-  },
-  {
-    name: 'Cây lâu năm',
-    layer:layerCayLauNam ,
-    icon:'fa-solid fa-tree'
-  },
-  {
-    name: 'Công trình công nghiệp',
-    layer:layerCongTrinh ,
-    icon:'fa-solid fa-industry'
-  }
-
-]
-
-// Custom control 
-const CombinedLayerControl = L.Control.extend({
-    onAdd: function () {
-        
+    
+    const CombinedLayerControl = L.Control.extend({
+      onAdd: function () {
         const wrapper = L.DomUtil.create("div", "combined-layer-control-wrapper");
-
-        //  nút bấm icon
         const toggleButton = L.DomUtil.create("div", "custom-layer-toggle", wrapper);
         toggleButton.innerHTML = `<div><i class="fa-solid fa-layer-group"></i></div>`;
-        //  bảng control
-        const panelContainer = L.DomUtil.create("div", "combined-layer-control", wrapper);
         
-        // Ngăn click trên control lan xuống bản đồ
+        const panelContainer = L.DomUtil.create("div", "combined-layer-control", wrapper);
         L.DomEvent.disableClickPropagation(wrapper);
 
+        // Base Layers
         const baseSection = L.DomUtil.create("div", "base-section", panelContainer);
         const titleBlock = L.DomUtil.create("div", "base-title", baseSection);
-        titleBlock.innerHTML = `<h4> Lớp nền bản đồ</h4>`;
+        titleBlock.innerHTML = `<h4>Lớp nền bản đồ</h4>`;
         const itemsContainer = L.DomUtil.create("div", "base-items-list", baseSection);
-        baseLayers.forEach((item, index) => {
+        
+        baseLayersData.forEach((item) => {
             const div = L.DomUtil.create("div", "base-item", itemsContainer);
             div.innerHTML = `
                 <img src="${item.img}" class="base-thumb" alt="${item.name}">
                 <div class="base-name">${item.name}</div>
             `;
             
-            
             if (map.hasLayer(item.layer)) {
                 div.classList.add("selected");
             }
 
             L.DomEvent.on(div, "click", () => {
-                baseLayers.forEach(i => map.removeLayer(i.layer));
+                baseLayersData.forEach(i => map.removeLayer(i.layer));
                 map.addLayer(item.layer);
-                document.querySelectorAll(".base-item").forEach(el => el.classList.remove("selected"));
+                const allItems = itemsContainer.querySelectorAll(".base-item");
+                allItems.forEach(el => el.classList.remove("selected"));
                 div.classList.add("selected");
             });
         });
         
+        // Overlays
         const overlaySection = L.DomUtil.create("div", "overlay-section", panelContainer);
-        overlaySection.innerHTML = `<h4> Lớp dữ liệu</h4>`;
-        
-        overlayLayers.forEach(item => {
+        overlaySection.innerHTML = `<h4>Lớp dữ liệu</h4>`;
+        overlayLayersData.forEach(item => {
             const div = L.DomUtil.create("div", "overlay-item", overlaySection);
             div.innerHTML = `
                 <label>
                     <input type="checkbox" class="overlay-checkbox">
-                    <i class="${item.icon} overlay-icon" ></i>
+                    <img src="${item.iconUrl}" class="overlay-icon" style="width: 20px; height: 20px; object-fit: contain; margin-right: 5px;">
                     <span class="overlay-name">${item.name}</span>
                 </label>
             `;
@@ -222,30 +151,33 @@ const CombinedLayerControl = L.Control.extend({
         });
         
         return wrapper;
-    },    
-});
+      },    
+    });
 
-map.addControl(new CombinedLayerControl({ position: "bottomleft"} ));
- 
+    map.addControl(new CombinedLayerControl({ position: "bottomleft"} ));
 
-// marker
-const faIcon = L.divIcon({
-  html: `
-    <i class="fa-solid fa-location-dot " 
-       style="
-         color: rgb(18, 199, 57);
-         font-size: 32px;
-       ">
-    </i>
-  `,
-  className: '',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -28]
-});
-const marker = L.marker([lat , log] , {icon: faIcon}).addTo(map);
-marker.bindPopup('<b>273 Điện Biên Phủ , Phường Xuân Hòa , <br> Thành Phố Hồ chí Minh.</b>');
-marker.on('click' , function() {
-  map.setView([lat, log ] , 17 , {animate: true})
-});
+    // Marker
+    const faIcon = L.divIcon({
+      html: `
+        <i class="fa-solid fa-location-dot" style="color: rgb(18, 199, 57); font-size: 32px;"></i>
+      `,
+      className: '',
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -28]
+    });
 
+    const marker = L.marker(config.center, {icon: faIcon}).addTo(map);
+    // Chỉ hiện tọa độ, không hiện tiêu đề ở đây nữa
+    marker.bindPopup(`<b>273 Điện Biên Phủ  Phường Xuân Hòa TP.HCM</b><br>${config.center}`);
+    marker.on('click' , function() {
+      map.setView(config.center, 17, {animate: true})
+    });
+
+  } catch (error) {
+    console.error("Lỗi khởi tạo ứng dụng:", error);
+    alert("Không thể tải bản đồ. Vui lòng kiểm tra API Key ");
+  }
+}
+
+initApp();

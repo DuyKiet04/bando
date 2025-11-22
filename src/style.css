@@ -28,43 +28,64 @@
       }
       
       /* -------------------------header---------------------------------- */
-     
+     .header-logo {
+    height: 40px; 
+    width: auto;
+    object-fit: cover;
+    vertical-align: middle;
+    border-radius:50%;
+    background: white; 
+    padding: 2px;
+    
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+.header-container h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px; 
+    color: var(--text-color);
+    margin: 10px 0;
+    font-weight: 500;
+}
+
       
-      .header-container h1{
-        display:flex ;
-        justify-content: center;
-        align-items: center;
-        font-size: 1.6rem;
-        font-weight: 500;
-        margin: 10px 0;
-        color:var(--text-color);
-        gap: 5px;
-      }
-      .header-container i {
-        font-size: 1.8rem;
-      }
+      
+      
       /* ------------------------conten-------------------------- */
       
       #map {
         width: 100%;
-        height: calc(100vh - 90px );
+        height: calc(100vh - 105px );
       }
      
       /* ---------------------------footer-------------------------------- */
-     
-      .footer-container p {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 10px 0;
-        font-weight: 500;
-        font-size: 1rem;
-        color: #ffff;
-        gap: 5px;
-      }
-      .footer-container i {
-        font-size: 1.1rem;
-      }
+    .footer-container p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 1rem;
+    margin: 10px 0 ;
+    font-weight: 500;
+    color: var(--text-color);
+}
+    .footer-logo {
+    height: 25px; 
+    width: auto;
+    object-fit: cover;
+    vertical-align: middle;
+    border-radius: 50%;
+    background: white; 
+    padding: 2px;
+}
+      
+      
 
 
    
@@ -116,7 +137,7 @@
 
 .base-items-list {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 cột */
+    grid-template-columns: repeat(3, 1fr); 
     gap: 10px;
     justify-items: center;
     align-items: center;
@@ -211,3 +232,6 @@
     font-size: 30px;  
     color: var(--primary);
   }
+
+
+  
