@@ -8,7 +8,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: new URL('leaflet/dist/images/marker-shadow.png', import.meta.url).href,
 });
 
-// Cấu hình API
+//  API
 const CONFIG_KEY = 'hcm'; 
 const API_URL = `https://mapsystem.netlify.app/api/config/${CONFIG_KEY}`;
 
@@ -23,13 +23,12 @@ async function initApp() {
 
     if(config.title) document.title = config.title;
 
-    //  Cập nhật Header Title
+    //  Cập nhật Header
     const titleEl = document.getElementById('app-title');
     if (titleEl && config.title) {
-        titleEl.innerText = config.title.toUpperCase(); // Viết hoa cho giống style cũ
+        titleEl.innerText = config.title.toUpperCase(); 
     }
 
-    //  Cập nhật Header Logo
     const logoEl = document.getElementById('app-logo');
     if (logoEl && config.logoUrl) {
         logoEl.src = config.logoUrl;
@@ -37,7 +36,7 @@ async function initApp() {
          
     }
 
-    // 4. Cập nhật Footer Title
+    // Cập nhật Footer Title
     
     const footerTitle = document.getElementById('footer-title');
     if (footerTitle && config.title) {
@@ -76,7 +75,8 @@ async function initApp() {
         layers: item.layers,
         format: "image/png",
         transparent: true,
-        attribution: item.name
+        attribution: item.name,
+        zIndex: 100
       })
     }));
 
@@ -114,6 +114,7 @@ async function initApp() {
             L.DomEvent.on(div, "click", () => {
                 baseLayersData.forEach(i => map.removeLayer(i.layer));
                 map.addLayer(item.layer);
+                item.layer.bringToBack();
                 const allItems = itemsContainer.querySelectorAll(".base-item");
                 allItems.forEach(el => el.classList.remove("selected"));
                 div.classList.add("selected");
@@ -168,7 +169,6 @@ async function initApp() {
     });
 
     const marker = L.marker(config.center, {icon: faIcon}).addTo(map);
-    // Chỉ hiện tọa độ, không hiện tiêu đề ở đây nữa
     marker.bindPopup(`<b>273 Điện Biên Phủ  Phường Xuân Hòa TP.HCM</b><br>${config.center}`);
     marker.on('click' , function() {
       map.setView(config.center, 17, {animate: true})
