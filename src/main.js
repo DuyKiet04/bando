@@ -10,7 +10,7 @@ L.Icon.Default.mergeOptions({
 
 //  API
 const CONFIG_KEY = 'hcm'; 
-const API_URL = `https://mapsystem.netlify.app/api/config/${CONFIG_KEY}`;
+const API_URL = `https://mapsystem.onrender.com/api/config/${CONFIG_KEY}`;
 
 async function initApp() {
   try {
